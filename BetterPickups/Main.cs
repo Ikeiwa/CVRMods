@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using HarmonyLib;
 
-[assembly: MelonInfo(typeof(BetterPickups.Main), "Better Pickups", "0.0.3", "ljoonal")]
+[assembly: MelonInfo(typeof(BetterPickups.Main), "BetterPickups", "1.0.0", "Ikeiwa")]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 namespace BetterPickups
 {

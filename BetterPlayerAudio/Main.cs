@@ -8,7 +8,7 @@ using Dissonance.Integrations.DarkRift2;
 using Dissonance;
 using UnityEngine;
 
-[assembly: MelonInfo(typeof(BetterPlayerAudio.Main), "Better Player Audio", "1.0.0", "Ikeiwa")]
+[assembly: MelonInfo(typeof(BetterPlayerAudio.Main), "BetterPlayerAudio", "1.0.0", "Ikeiwa")]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 namespace BetterPlayerAudio
 {

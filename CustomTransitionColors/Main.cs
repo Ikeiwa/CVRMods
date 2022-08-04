@@ -13,7 +13,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using HarmonyLib;
 
-[assembly: MelonInfo(typeof(CustomTransitionColors.Main), "Custom Transition Colors", "1.0.0", "Ikeiwa")]
+[assembly: MelonInfo(typeof(CustomTransitionColors.Main), "CustomTransitionColors", "1.0.0", "Ikeiwa")]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 namespace CustomTransitionColors
 {
