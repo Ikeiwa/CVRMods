@@ -15,9 +15,9 @@ Let you change the different colors of the transition effect.
 
 Makes pickups more easily grabbable and less "laggy"
 
-## AvatarDownloadProgress
+## EverythingDownloadProgress
 
-Let you know the progress of avatar loading. No more frustration while waiting !
+Let you know the download progress of everything. No more frustration while waiting !
 
 
 #### The mod author and modifications are in no affiliation with ABI and not supported by ABI.

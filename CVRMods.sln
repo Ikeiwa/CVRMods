@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BetterPickups", "BetterPick
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTransitionColors", "CustomTransitionColors\CustomTransitionColors.csproj", "{EC79AE0B-65A0-4618-9CEA-ACB565423214}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvatarDownloadProgress", "AvatarDownloadProgress\AvatarDownloadProgress.csproj", "{D969E238-4DAB-4309-8D18-CA6A8F6C32B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EverythingDownloadProgress", "EverythingDownloadProgress\EverythingDownloadProgress.csproj", "{D969E238-4DAB-4309-8D18-CA6A8F6C32B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,7 +9,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AvatarDownloadProgress
+namespace EverythingDownloadProgress
 {
     public class DownloadProgress : MonoBehaviour
     {
@@ -49,7 +49,7 @@ namespace AvatarDownloadProgress
 
         void Update()
         {
-            if (player == null || player.AvatarHolder == null)
+            if (player == null)
             {
                 return;
             }
@@ -58,9 +58,6 @@ namespace AvatarDownloadProgress
             {
                 switch (downloadJob.Status)
                 {
-                    case DownloadJob.ExecutionStatus.Waiting:
-                        textProgress.text = "In Queue"; 
-                        break;
                     case DownloadJob.ExecutionStatus.Downloading:
                         textProgress.text = "Downloading " + downloadJob.Progress + "%";
                         loadingBarImage.fillAmount = downloadJob.Progress / 100;
@@ -73,13 +70,18 @@ namespace AvatarDownloadProgress
                     case DownloadJob.ExecutionStatus.DownloadComplete:
                         textProgress.text = "Importing";
                         loadingBarImage.fillAmount = 1;
-                        if (player.AvatarHolder.transform.childCount > 0)
+                        if (player.AvatarHolder && player.AvatarHolder.transform.childCount > 0 && player.AvatarHolder.activeSelf && player.PuppetMaster.avatarObject)
                         {
                             Destroy(spinner);
                             Destroy(gameObject);
                         }
                         break;
                 }
+            }
+            else
+            {
+                Destroy(spinner);
+                Destroy(gameObject);
             }
 
             spinner.transform.position = (player.AvatarHolder.transform.position + transform.parent.position) / 2;
