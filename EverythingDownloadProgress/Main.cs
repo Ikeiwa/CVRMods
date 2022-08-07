@@ -25,9 +25,12 @@ namespace EverythingDownloadProgress
         public static GameObject downloadBarObj;
         public static GameObject spinnerObj;
 
-        public static DownloadJob currentLocalJob;
+        public static DownloadJob currentAvatarJob;
+        public static List<DownloadJob> currentPropsJob;
+        public static DownloadJob currentPropJob;
         private GameObject itemLoadingItem;
         private TMP_Text itemLoadingStatus;
+        private int lastDownloadAmount;
 
         public override void OnApplicationStart()
         {
@@ -44,6 +47,8 @@ namespace EverythingDownloadProgress
             {
                 MelonLogger.Msg("Error loading assetbundle");
             }
+
+            currentPropsJob = new List<DownloadJob>();
 
             harmony.PatchAll();
         }
@@ -79,38 +84,55 @@ namespace EverythingDownloadProgress
             }
         }
 
+        public static void UpdateJobs()
+        {
+            currentAvatarJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => !match.IsRemoteObject &&
+            match.Type == DownloadJob.ObjectType.Avatar);
+            
+            currentPropJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => match.Type == DownloadJob.ObjectType.Prop);
+            currentPropsJob = CVRDownloadManager.Instance.AllDownloadJobs.FindAll((DownloadJob match) => match.Type == DownloadJob.ObjectType.Prop);
+        }
+
         public override void OnUpdate()
         {
             if(itemLoadingItem && itemLoadingStatus)
             {
-                if(CVRDownloadManager.Instance.AllDownloadJobs.Count > 0 && currentLocalJob != null && !CVRDownloadManager.Instance.IsDownloadingWorld)
+                if(CVRDownloadManager.Instance.AllDownloadJobs.Count > 0 && !CVRDownloadManager.Instance.IsDownloadingWorld && (currentAvatarJob != null || currentPropJob != null || currentPropsJob.Count > 0))
                 {
                     if(!itemLoadingItem.activeSelf)
                         itemLoadingItem.SetActive(true);
 
                     TryUpdateCurrentLocalItemPercent();
-
-                    if(currentLocalJob.Status == DownloadJob.ExecutionStatus.DownloadComplete || 
-                        currentLocalJob.Status == DownloadJob.ExecutionStatus.Error || 
-                        currentLocalJob.Status == DownloadJob.ExecutionStatus.JobDone ||
-                        currentLocalJob.Progress >= 99.9)
-                    {
-                        itemLoadingItem.SetActive(false);
-                        currentLocalJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => !match.IsRemoteObject && match.Status != DownloadJob.ExecutionStatus.DownloadComplete && match.Type != DownloadJob.ObjectType.World);
-                    }
                 }
-                else
+                else if(itemLoadingItem.activeSelf)
                 {
-                    if(itemLoadingItem.activeSelf && (currentLocalJob == null || (currentLocalJob != null && currentLocalJob.Status != DownloadJob.ExecutionStatus.Downloading) || CVRDownloadManager.Instance.IsDownloadingWorld))
-                        itemLoadingItem.SetActive(false);
+                    itemLoadingItem.SetActive(false);
+                }
+
+                if(CVRDownloadManager.Instance.AllDownloadJobs.Count != lastDownloadAmount)
+                {
+                    lastDownloadAmount = CVRDownloadManager.Instance.AllDownloadJobs.Count;
+                    UpdateJobs();
                 }
             }
-            
         }
 
         private void TryUpdateCurrentLocalItemPercent()
         {
-            itemLoadingStatus.text = currentLocalJob.Status + " " + currentLocalJob.Type + ": " + currentLocalJob.Progress + "%";
+            string avatarString = "";
+            if(currentAvatarJob != null)
+                avatarString = currentAvatarJob.Status + " Avatar" + ": " + currentAvatarJob.Progress + "%\n";
+
+            string propsString = "";
+            if(currentPropsJob.Count > 0)
+            {
+                if(currentPropJob != null)
+                    propsString = currentPropJob.Status + " " + currentPropsJob.Count + " Props" + ": " + currentPropJob.Progress + "%";
+                else
+                    propsString = "Waiting " + currentPropsJob.Count + " Props";
+            }
+
+            itemLoadingStatus.text = avatarString+propsString;
         }
     }
 }

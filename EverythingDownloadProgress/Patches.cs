@@ -46,6 +46,15 @@ namespace EverythingDownloadProgress
         }
     }
 
+    [HarmonyPatch(typeof(CVRDownloadManager), nameof(CVRDownloadManager.AddDownloadJob))]
+    public class Patch_CVRDownloadManager_AddDownloadJob
+    {
+        public static void Postfix()
+        {
+			Main.UpdateJobs();
+        }
+    }
+
     [HarmonyPatch(typeof(CVRDownloadManager), nameof(CVRDownloadManager.TryGetCurentJoiningWorldDownloadPercentage))]
     public class Patch_CVRDownloadManager_TryGetCurentJoiningWorldDownloadPercentage
     {
@@ -63,63 +72,20 @@ namespace EverythingDownloadProgress
         }
     }
 
-    [HarmonyPatch(typeof(DownloadManagerHelperFunctions), nameof(DownloadManagerHelperFunctions.GetFolderPath))]
-    public class Patch_DownloadManagerHelperFunctions_GetFolderPath
+    [HarmonyPatch(typeof(DownloadManagerHelperFunctions), nameof(DownloadManagerHelperFunctions.WriteProgress))]
+    public static class Patch_DownloadManagerHelperFunctions_WriteProgress
     {
-        public static string lastObjectId = null;
-        public static string lastObjectFileId = null;
-
-        public static void Prefix(DownloadJob.ObjectType t, string objectId,string fileId)
-        {
-            lastObjectId = objectId;
-            lastObjectFileId = fileId;
-            //MelonLogger.Msg(lastObjectId + " | " + lastObjectFileId);
-        }
-    }
-
-    public static class CustomDownloadManagerHelperFunctions
-    {
-        public static void WriteProgress(object sender, DownloadProgressChangedEventArgs e, DownloadJob job)
+        public static bool Prefix(object sender, DownloadProgressChangedEventArgs e)
         {
             try
             {
-                /*DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
-                    match.Status == DownloadJob.ExecutionStatus.Downloading && match.ObjectId == objectId);*/
-
-                if(job != null)
-                {
-                    job.Progress = e.ProgressPercentage;
-                    //MelonLogger.Msg(job.ObjectId + " | " + job.Type + " | " + job.Progress);
-                }
+                DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
+                    match.Status == DownloadJob.ExecutionStatus.Downloading);
+                job.Progress = e.ProgressPercentage;
             }
             catch { }
-        }
-    }
 
-    [HarmonyPatch(typeof(WebClient), nameof(WebClient.DownloadFileTaskAsync), new System.Type[] {typeof(string), typeof(string) })]
-    public class Patch_WebClient_DownloadFileTaskAsync
-    {
-        public static void Prefix(WebClient __instance, string address, string fileName)
-        {
-            string lastObjectId = string.Copy(Patch_DownloadManagerHelperFunctions_GetFolderPath.lastObjectId);
-            string lastObjectFileId = string.Copy(Patch_DownloadManagerHelperFunctions_GetFolderPath.lastObjectFileId);
-            //MelonLogger.Msg(address + " | " + fileName + " | " + lastObjectId + " | " + lastObjectFileId);
-
-            if(address.Contains(lastObjectId) && address.Contains(lastObjectFileId))
-            {
-                DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => match.ObjectId == lastObjectId);
-
-                if(job != null)
-                {
-                    if(!job.IsRemoteObject && job.Type != DownloadJob.ObjectType.World && (Main.currentLocalJob == null || (Main.currentLocalJob != null && Main.currentLocalJob.Status == DownloadJob.ExecutionStatus.DownloadComplete)))
-                    {
-                        Main.currentLocalJob = job;
-                    }
-                    //MelonLogger.Msg(job.ObjectId);
-                    __instance.DownloadProgressChanged += (object sender, DownloadProgressChangedEventArgs e) => { CustomDownloadManagerHelperFunctions.WriteProgress(sender,e,job); };
-                }
-
-            }
+            return false;
         }
     }
 
