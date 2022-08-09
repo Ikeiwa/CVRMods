@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -12,6 +13,7 @@ using ABI_RC.Core.Savior;
 using MelonLoader;
 using UnityEngine;
 using ABI_RC.Core.Base;
+using System.Reflection;
 
 namespace EverythingDownloadProgress
 {
@@ -79,9 +81,30 @@ namespace EverythingDownloadProgress
         {
             try
             {
-                DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
-                    match.Status == DownloadJob.ExecutionStatus.Downloading);
-                job.Progress = e.ProgressPercentage;
+                WebClient client = (WebClient)sender;
+                string fileId = null;
+
+                if (Main.webClientRequest != null)
+                {
+                    WebRequest request = Main.webClientRequest.GetValue(client) as WebRequest;
+                    if (request != null)
+                    {
+                        fileId = new DirectoryInfo(request.RequestUri.AbsolutePath).Parent.Name;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(fileId))
+                {
+                    DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
+                        match.Status == DownloadJob.ExecutionStatus.Downloading && match.Type == DownloadJob.ObjectType.World);
+                    job.Progress = e.ProgressPercentage;
+                }
+                else
+                {
+                    DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
+                        match.Status == DownloadJob.ExecutionStatus.Downloading && match.ObjectFileId == fileId);
+                    job.Progress = e.ProgressPercentage;
+                }
             }
             catch { }
 

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ABI_RC.Core.IO;
@@ -25,6 +27,7 @@ namespace EverythingDownloadProgress
         public static GameObject downloadBarObj;
         public static GameObject spinnerObj;
 
+        public static FieldInfo webClientRequest;
         public static DownloadJob currentAvatarJob;
         public static List<DownloadJob> currentPropsJob;
         public static DownloadJob currentPropJob;
@@ -34,6 +37,8 @@ namespace EverythingDownloadProgress
 
         public override void OnApplicationStart()
         {
+            webClientRequest = typeof(WebClient).GetField("m_WebRequest", BindingFlags.NonPublic | BindingFlags.Instance);
+
             settingsCategory = MelonPreferences.CreateCategory("EverythingDownloadProgress");
             showDebug = settingsCategory.CreateEntry("Show Debug", false);
 
@@ -127,9 +132,9 @@ namespace EverythingDownloadProgress
             if(currentPropsJob.Count > 0)
             {
                 if(currentPropJob != null)
-                    propsString = currentPropJob.Status + " " + currentPropsJob.Count + " Props" + ": " + currentPropJob.Progress + "%";
+                    propsString = currentPropJob.Status + " " + currentPropsJob.Count + " Prop" + (currentPropsJob.Count>1?"s":"") + ": " + currentPropJob.Progress + "%";
                 else
-                    propsString = "Waiting " + currentPropsJob.Count + " Props";
+                    propsString = "Waiting " + currentPropsJob.Count + " Prop"+(currentPropsJob.Count>1?"s":"");
             }
 
             itemLoadingStatus.text = avatarString+propsString;
