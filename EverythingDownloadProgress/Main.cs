@@ -94,7 +94,7 @@ namespace EverythingDownloadProgress
             currentAvatarJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => !match.IsRemoteObject &&
             match.Type == DownloadJob.ObjectType.Avatar);
             
-            currentPropJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => match.Type == DownloadJob.ObjectType.Prop);
+            currentPropJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => match.Type == DownloadJob.ObjectType.Prop && match.Status == DownloadJob.ExecutionStatus.Downloading);
             currentPropsJob = CVRDownloadManager.Instance.AllDownloadJobs.FindAll((DownloadJob match) => match.Type == DownloadJob.ObjectType.Prop);
         }
 

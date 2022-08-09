@@ -84,9 +84,12 @@ namespace EverythingDownloadProgress
                 Destroy(gameObject);
             }
 
-            spinner.transform.position = (player.AvatarHolder.transform.position + transform.parent.position) / 2;
-            spinner.transform.LookAt(Camera.main.transform);
-            spinnerAnim.Rotate(new Vector3(0,0,Time.deltaTime*180),Space.Self);
+            if (spinner && player.AvatarHolder && player.AvatarHolder.transform)
+            {
+                spinner.transform.position = (player.AvatarHolder.transform.position + transform.parent.position) / 2;
+                spinner.transform.LookAt(Camera.main.transform);
+                spinnerAnim.Rotate(new Vector3(0,0,Time.deltaTime*180),Space.Self);
+            }
         }
     }
 }
