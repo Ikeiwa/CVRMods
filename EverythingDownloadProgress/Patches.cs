@@ -83,6 +83,7 @@ namespace EverythingDownloadProgress
             {
                 WebClient client = (WebClient)sender;
                 string fileId = null;
+                string objectId = null;
 
                 if (Main.webClientRequest != null)
                 {
@@ -90,10 +91,11 @@ namespace EverythingDownloadProgress
                     if (request != null)
                     {
                         fileId = new DirectoryInfo(request.RequestUri.AbsolutePath).Parent.Name;
+                        objectId = new DirectoryInfo(request.RequestUri.AbsolutePath).Parent.Parent.Name;
                     }
                 }
 
-                if (string.IsNullOrEmpty(fileId))
+                if (string.IsNullOrEmpty(fileId) || string.IsNullOrEmpty(objectId))
                 {
                     DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
                         match.Status == DownloadJob.ExecutionStatus.Downloading && match.Type == DownloadJob.ObjectType.World);
@@ -102,7 +104,7 @@ namespace EverythingDownloadProgress
                 else
                 {
                     DownloadJob job = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) =>
-                        match.Status == DownloadJob.ExecutionStatus.Downloading && match.ObjectFileId == fileId);
+                        match.Status == DownloadJob.ExecutionStatus.Downloading && match.ObjectFileId == fileId && match.ObjectId == objectId);
                     job.Progress = e.ProgressPercentage;
                 }
             }
