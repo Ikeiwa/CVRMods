@@ -23,13 +23,13 @@ namespace EverythingDownloadProgress
         public static void Postfix(Message message)
         {
             using (DarkRiftReader reader = message.GetReader())
-			{
-				string ownerId = reader.ReadString();
-				string id = reader.ReadString();
-				
+            {
+                string ownerId = reader.ReadString();
+                string id = reader.ReadString();
+                
                 CVRPlayerEntity playerEntity = CVRPlayerManager.Instance.NetworkPlayers.Find((CVRPlayerEntity players) => players.Uuid == ownerId);
-				if (ownerId != MetaPort.Instance.ownerId && playerEntity.PlayerObject != null)
-				{
+                if (ownerId != MetaPort.Instance.ownerId && playerEntity.PlayerObject != null)
+                {
                     DownloadProgress oldProgress = playerEntity.PlayerNameplate.s_Nameplate.GetComponentInChildren<DownloadProgress>();
                     if (oldProgress)
                         Object.Destroy(oldProgress.gameObject);
@@ -44,7 +44,7 @@ namespace EverythingDownloadProgress
                     progress.downloadId = id;
                     progress.player = playerEntity;
                 }
-			}
+            }
         }
     }
 
@@ -53,24 +53,7 @@ namespace EverythingDownloadProgress
     {
         public static void Postfix()
         {
-			Main.UpdateJobs();
-        }
-    }
-
-    [HarmonyPatch(typeof(CVRDownloadManager), nameof(CVRDownloadManager.TryGetCurentJoiningWorldDownloadPercentage))]
-    public class Patch_CVRDownloadManager_TryGetCurentJoiningWorldDownloadPercentage
-    {
-        public static bool Prefix(ref float __result)
-        {
-			try
-			{
-				__result = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => match.Type == DownloadJob.ObjectType.World && match.Status == DownloadJob.ExecutionStatus.Downloading).Progress;
-			}
-			catch
-			{
-				__result = 0f;
-			}
-            return false;
+            Main.UpdateJobs();
         }
     }
 
@@ -125,7 +108,12 @@ namespace EverythingDownloadProgress
                     HudOperations.Instance.worldLoadStatus.text = "Verifying World Version";
                     break;
                 case 1:
-                    HudOperations.Instance.worldLoadStatus.text = "Downloading World: " + CVRDownloadManager.Instance.TryGetCurentJoiningWorldDownloadPercentage() + "%";
+                    DownloadJob worldJob = CVRDownloadManager.Instance.AllDownloadJobs.Find((DownloadJob match) => match.Type == DownloadJob.ObjectType.World && match.Status == DownloadJob.ExecutionStatus.Downloading);
+
+                    if(worldJob != null)
+                        HudOperations.Instance.worldLoadStatus.text = "Downloading World: " + worldJob.Progress + "%";
+                    else
+                        HudOperations.Instance.worldLoadStatus.text = "Downloading World: 0%";
                     break;
                 case 2:
                     if (value > 0f)
