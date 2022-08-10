@@ -12,7 +12,7 @@ using HarmonyLib;
 using ABI_RC.Core.Player;
 using TMPro;
 
-[assembly: MelonInfo(typeof(EverythingDownloadProgress.Main), "EverythingDownloadProgress", "1.0.0", "Ikeiwa")]
+[assembly: MelonInfo(typeof(EverythingDownloadProgress.Main), "EverythingDownloadProgress", "1.0.2", "Ikeiwa")]
 [assembly: MelonGame("Alpha Blend Interactive", "ChilloutVR")]
 [assembly: MelonIncompatibleAssemblies("WorldDownloadPercentage")]
 namespace EverythingDownloadProgress
@@ -22,7 +22,6 @@ namespace EverythingDownloadProgress
         public static MelonPreferences_Category settingsCategory;
         public static MelonPreferences_Entry<bool> showDebug;
 
-        HarmonyLib.Harmony harmony = new HarmonyLib.Harmony("com.ikeiwa.EverythingDownloadProgress");
         private static AssetBundle barAssetBundle;
         public static GameObject downloadBarObj;
         public static GameObject spinnerObj;
@@ -54,8 +53,6 @@ namespace EverythingDownloadProgress
             }
 
             currentPropsJob = new List<DownloadJob>();
-
-            harmony.PatchAll();
         }
 
         public override void OnGUI()
