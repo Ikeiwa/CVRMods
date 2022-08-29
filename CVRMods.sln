@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTransitionColors", "C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EverythingDownloadProgress", "EverythingDownloadProgress\EverythingDownloadProgress.csproj", "{D969E238-4DAB-4309-8D18-CA6A8F6C32B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImmersiveHUD", "ImmersiveHUD\ImmersiveHUD.csproj", "{DAFC8045-5A8A-4C9D-A075-2D6F8C19BBC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{D969E238-4DAB-4309-8D18-CA6A8F6C32B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D969E238-4DAB-4309-8D18-CA6A8F6C32B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D969E238-4DAB-4309-8D18-CA6A8F6C32B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAFC8045-5A8A-4C9D-A075-2D6F8C19BBC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAFC8045-5A8A-4C9D-A075-2D6F8C19BBC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAFC8045-5A8A-4C9D-A075-2D6F8C19BBC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAFC8045-5A8A-4C9D-A075-2D6F8C19BBC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
