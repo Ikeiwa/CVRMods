@@ -24,8 +24,12 @@ namespace ImmersiveHUD
         public static MelonPreferences_Entry<bool> showOnMicOff;
         public static MelonPreferences_Entry<bool> showOnFriendRequest;
         public static MelonPreferences_Entry<bool> showOnInvite;
-        public static MelonPreferences_Entry<bool> showOnMessage;
+        public static MelonPreferences_Entry<bool> showOnSystemMessage;
+        public static MelonPreferences_Entry<bool> showOnJoin;
+        public static MelonPreferences_Entry<bool> showOnLeave;
+        public static MelonPreferences_Entry<bool> showOnPropBlocked;
 
+        private MeshRenderer hudRenderer;
         private object currentHideTimer;
         private bool forceShow;
 
@@ -40,35 +44,50 @@ namespace ImmersiveHUD
             showOnMicOff = settingsCategory.CreateEntry("Show on mute", true);
             showOnFriendRequest = settingsCategory.CreateEntry("Show on friend request", true);
             showOnInvite = settingsCategory.CreateEntry("Show on invite", true);
-            showOnMessage = settingsCategory.CreateEntry("Show on system message", true);
+            showOnJoin = settingsCategory.CreateEntry("Show on player joined", true);
+            showOnLeave = settingsCategory.CreateEntry("Show on player left", true);
+            showOnPropBlocked = settingsCategory.CreateEntry("Show on prop blocked", true);
+            showOnSystemMessage = settingsCategory.CreateEntry("Show on system message", true);
+        }
+
+        public override void OnPreferencesSaved()
+        {
+            if(hudRenderer) hudRenderer.enabled = true;
         }
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if(buildIndex == 3)
+            {
+                hudRenderer = CohtmlHud.Instance.gameObject.GetComponent<MeshRenderer>();
                 StartHideTimer();
+            }
         }
 
         public void ForceShowHUD()
         {
             forceShow = true;
-            CohtmlHud.Instance.RestoreHud();
+            hudRenderer.enabled = true;
         }
 
-        public void StartHideTimer(bool force = false)
+        public void StartHideTimer(bool force = false, float duration = -1)
         {
             if(force) forceShow = false;
             else if(forceShow) return;
 
+            if(duration < 0)
+                duration = hideDelay.Value;
+
+            hudRenderer.enabled = true;
             if(currentHideTimer != null)
                 MelonCoroutines.Stop(currentHideTimer);
-            currentHideTimer = MelonCoroutines.Start(HideAfterDelay(hideDelay.Value));
+            currentHideTimer = MelonCoroutines.Start(HideAfterDelay(duration));
         }
 
         private IEnumerator HideAfterDelay(float duration)
         {
             yield return new WaitForSeconds(duration);
-            CohtmlHud.Instance.HideHud();
+            hudRenderer.enabled = false;
         }
     }
 }

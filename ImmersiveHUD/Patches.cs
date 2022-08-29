@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using ABI_RC.Core.InteractionSystem;
 using ABI_RC.Core.UI;
 using HarmonyLib;
+using MelonLoader;
 
 namespace ImmersiveHUD
 {
@@ -60,30 +61,38 @@ namespace ImmersiveHUD
     [HarmonyPatch(typeof(CohtmlHud), nameof(CohtmlHud.ViewDropText), new Type[] { typeof(string), typeof(string) })]
     class Patch_CohtmlHud_ViewDropText_1
     {
-        public static void Postfix()
+        private const string propBlockedMsg = "Prop was blocked by the content filter System";
+
+        public static void Postfix(string headline, string small)
         {
-            if(Main.showOnMessage.Value)
-                Main.instance.StartHideTimer();
+            if(!Main.showOnPropBlocked.Value && headline == propBlockedMsg) return;
+            else if(Main.showOnSystemMessage.Value)
+                Main.instance.StartHideTimer(false,4.5f);
         }
     }
 
     [HarmonyPatch(typeof(CohtmlHud), nameof(CohtmlHud.ViewDropText), new Type[] { typeof(string), typeof(string), typeof(string) })]
     class Patch_CohtmlHud_ViewDropText_2
     {
-        public static void Postfix()
+        private const string joinedMsg = "A user has joined your Instance";
+        private const string leftMsg = "The user has disconnected from this Instance";
+
+        public static void Postfix(string cat, string headline, string small)
         {
-            if(Main.showOnMessage.Value)
-                Main.instance.StartHideTimer();
+            if(!Main.showOnJoin.Value && small == joinedMsg) return;
+            else if(!Main.showOnLeave.Value && small == leftMsg) return;
+            else if(Main.showOnSystemMessage.Value)
+                Main.instance.StartHideTimer(false,4.5f);
         }
     }
 
     [HarmonyPatch(typeof(CohtmlHud), nameof(CohtmlHud.ViewDropTextImmediate), new Type[] { typeof(string), typeof(string), typeof(string) })]
     class Patch_CohtmlHud_ViewDropTextImmediate
     {
-        public static void Postfix()
+        public static void Postfix(string cat, string headline, string small)
         {
-            if(Main.showOnMessage.Value)
-                Main.instance.StartHideTimer();
+            if(Main.showOnSystemMessage.Value)
+                Main.instance.StartHideTimer(false,4.5f);
         }
     }
 }
